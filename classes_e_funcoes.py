@@ -173,7 +173,6 @@ class Player(pygame.sprite.Sprite):
         return checkposx, checkposy, x_antigo, y_antigo, indice, checkpos
 
 
-
     def update_no_gelo(self, incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, mapa_parede, indice, checkpos, ult_checkpos, esta_no_gelo, area_gelo):
         
         colidindo = self.check_colisao(mapa_parede)
@@ -181,7 +180,6 @@ class Player(pygame.sprite.Sprite):
         x_antigo, y_antigo = self.ultima_pos(colidindo, x_antigo, y_antigo)
         indice = self.troca_sprite(checkposx, checkposy, andando_horizontal, andando_vertical, indice)
         esta_no_gelo = self.check_colisao_gelo(area_gelo)
-        print(colidindo)
 
         if esta_no_gelo:
             self.speed = 15
@@ -247,7 +245,7 @@ class Textbox(pygame.sprite.Sprite):
         transparente = (0,0,0,0)
         keys = pygame.key.get_pressed()
 
-        print(textbox_surgiu)
+        # print(textbox_surgiu)
         if textbox_surgiu == False:
             for i in range(60):
                 superficie.blit(self.caixa, (500, 500))
@@ -366,6 +364,28 @@ class CameraGroup(pygame.sprite.Group):
         self.half_w = self.display_surface.get_size()[0]/2
         self.half_h = self.display_surface.get_size()[1]/2
 
+    def fade(self, width, height, alpha): 
+        self.hud_surf = pygame.Surface((width, height))
+        self.hud_surf.fill((0,0,0))
+        self.hud_surf.set_alpha(alpha)
+        self.display_surface.blit(self.hud_surf, (0,0))
+        pygame.time.delay(10)
+
+    def fade_out(self, width, height):
+        self.hud_surf = pygame.Surface((width, height))
+        self.hud_surf.fill((0,0,0))
+        for i in range(200):
+            self.hud_surf.set_alpha(i)
+            self.display_surface.blit(self.hud_surf, (0,0))
+            pygame.time.delay(10)
+    
+    def fade_in(self, width, heigth):
+        self.hud_surf = pygame.Surface((width, height))
+        self.hud_surf.fill((0,0,0))
+
+    
+   
+
     def camera_centrada(self, target, limites):
         
         # limites = [x_menor, x_maior, y_menor, y_maior]
@@ -417,7 +437,6 @@ class CameraGroup(pygame.sprite.Group):
         tela.blit(self.hud_surf, (hud_offsetx, hud_offsety))
 
         return contador_mapas
-
 
 
 class GameMaps():
@@ -718,6 +737,7 @@ def carrega_mapa_com_gelo(contador_mapas, tela, player, limites, mapa, mapa_pare
     pygame.display.update()
 
     return contador_mapas, colidindo, esta_no_gelo
+
 
 
 
