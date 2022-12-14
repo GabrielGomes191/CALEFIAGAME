@@ -601,16 +601,15 @@ while True:
                 #             delay_empurrar = pedra.movimento(ult_checkpos, delay_empurrar)
 
 
-                if player.mask.overlap_area(pedra.mask, (offsetx, offsety)) > 250:
+                if player.mask.overlap_area(pedra.mask, (offsetx, offsety)) > 260:
                         colidindo = True
                         x_antigo, y_antigo = player.ultima_pos(colidindo, x_antigo, y_antigo)
-                        print("colidindo")
                 if player.mask.overlap_area(pedra.mask, (offsetx, offsety)) > 0:
-                    print("quase colidindo")
-                    if delay_empurrar > 20:
-                         delay_empurrar = pedra.movimento(ult_checkpos, delay_empurrar)
+                    pode_empurrar = pedra.check_pos_futura(pedras, ult_checkpos)
+                    if delay_empurrar > 20 and pode_empurrar:
+                        delay_empurrar = pedra.movimento(ult_checkpos, delay_empurrar, player)
                 
-            delay_empurrar += 1   
+            delay_empurrar += 1
 
 
             # if player.rect.collidepoint(115, 1305):

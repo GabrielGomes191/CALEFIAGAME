@@ -263,50 +263,72 @@ class Pedra(pygame.sprite.Sprite):
         self.image = pygame.image.load("sprites\pedra redonda.png").convert_alpha()
         self.rect = self.image.get_rect(center = pos)
         self.mask = pygame.mask.from_surface(self.image)
+        self.pode_empurrar = True
 
-    
-    def movimento(self, checkpos, delay_empurrar):
+    def movimento(self, checkpos, delay_empurrar, player):
         keys = pygame.key.get_pressed()
 
-        if checkpos == "up" and keys[pygame.K_x]:
+        if checkpos == "up" and keys[pygame.K_RSHIFT] and self.rect.centery >= 764 and player.rect.centery > self.rect.centery:
             self.rect.centery -= 46
             delay_empurrar = 0
+            self.direcao_pedra = "cima"
 
-        elif checkpos == "down" and keys[pygame.K_x]:
+
+        elif checkpos == "down" and keys[pygame.K_RSHIFT] and self.rect.centery <= 902 and player.rect.centery < self.rect.centery:
             self.rect.centery += 46
             delay_empurrar = 0
+            self.direcao_pedra = "baixo"
 
-        elif checkpos == "right" and keys[pygame.K_x]:
+        elif checkpos == "right" and keys[pygame.K_RSHIFT] and self.rect.centerx > 1127 and player.rect.centerx < self.rect.centerx:
                 self.rect.centerx += 55
                 delay_empurrar = 0
+                self.direcao_pedra = "direita"
 
-        elif checkpos == "left" and keys[pygame.K_x]:
+        elif checkpos == "left" and keys[pygame.K_RSHIFT] and self.rect.centerx < 1402 and player.rect.centerx > self.rect.centerx:
                 self.rect.centerx -= 55
                 delay_empurrar = 0
+                self.direcao_pedra = "esquerda"
 
         return delay_empurrar
 
+    def check_pos_futura(self, lista_pedras, checkpos):
+        lista_pedras.remove(self)
 
-        # if checkpos == "UP" and keys[pygame.K_x]:
-        #     self.direction.y = -1
-        #     delay_empurrar = 0
-        # elif checkpos == "DOWN" and keys[pygame.K_x]:
-        #     self.direction.y = 1
-        #     delay_empurrar = 0
-            
-        # elif checkpos == "LEFT" and keys[pygame.K_x]:
-        #     self.direction.x = -1
-        #     delay_empurrar = 0
-        # elif checkpos == "RIGHT" and keys[pygame.K_x]:
-        #     self.direction.x = 1
-        #     delay_empurrar = 0
+        for outras_pedras in lista_pedras:
+            #print(self.rect.centery - 46, outras_pedras.rect.centery)
 
-        # else:
-        #     delay_empurrar = 0
+            if checkpos == "up":
+                if self.rect.centery - 46 == outras_pedras.rect.centery and self.rect.centerx == outras_pedras.rect.centerx:
+                    self.pode_empurrar = False
+                    break
+                else:
+                    self.pode_empurrar = True
 
-        # andado += self.direction * self.sp
-        # eed
-        # return delay_empurrar, andado
+            elif checkpos == "down":
+                if self.rect.centery + 46 == outras_pedras.rect.centery and self.rect.centerx == outras_pedras.rect.centerx:
+                    self.pode_empurrar = False
+                    break
+                else:
+                    self.pode_empurrar = True
+
+            elif checkpos == "right":
+                if self.rect.centerx  + 55 == outras_pedras.rect.centerx and self.rect.centery == outras_pedras.rect.centery:
+                    self.pode_empurrar = False
+                    break
+                else:
+                    self.pode_empurrar = True
+
+
+            elif checkpos == "left":
+                if self.rect.centerx - 55 == outras_pedras.rect.centerx and self.rect.centery == outras_pedras.rect.centery:
+                    self.pode_empurrar = False
+                    break
+                else:
+                    self.pode_empurrar = True
+
+        lista_pedras.append(self)
+
+        return self.pode_empurrar
 
 class Gema(pygame.sprite.Sprite):
     def __init__(self, pos, group, elemento):
