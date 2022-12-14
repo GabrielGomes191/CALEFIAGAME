@@ -1,0 +1,14 @@
+if colisao == False:
+    colisao_ = gamemaps.Colisao_((0,0), camera_group)
+    colisao = True
+
+contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, limites, mapa, mapa_parede, camera_group, colidindo, incapacitada)
+checkposx, checkposy, x_antigo, y_antigo = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, mapa_parede)
+
+
+
+
+
+gamearea = " "
+gamemaps.map = " "
+colisao, contador_mapas = troca_mapa(old_map, camera_group, camx, camy, posx, posy, player)
