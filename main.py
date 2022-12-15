@@ -38,10 +38,10 @@ venceu_cogu = False
 esta_no_gelo = True
 
 
-#variaveis Coletou emas
+#variaveis Coletou emas 
 ColetouLuz = True
 ColetouTerra = False
-ColetouFogo = True
+ColetouFogo = False
 ColetouAgua = False
 ColetouAr = False
 
@@ -101,15 +101,12 @@ while True:
 
         keys = pygame.key.get_pressed()
 
-        if ColetouLuz == False:
-            camera_group.fade(1280, 720, 215)
-
         if colisao == False:
 
             if ColetouAgua == False:
                 colisao_lobby = gamemaps.Colisao_lobby((0,0), camera_group)
             if ColetouAgua == True:
-                colisao_lobby.kill()
+                #colisao_lobby.kill()
                 colisao_lobby = gamemaps.Colisao_lobby_Sem_Agua((0,0), camera_group)
 
             pedra0 = Pedra_lobby((1075, 250), camera_group)
@@ -136,10 +133,6 @@ while True:
 
         elif ColetouLuz == False and click == False:
             textbox1.surgir_menu(camera_group.hud_surf, click)
-
-        
-
-
 
         #Pedra roadblock#
         offset_pedra0_x = pedra0.rect.centerx - player.rect.centerx
@@ -188,12 +181,11 @@ while True:
         offset_agua_x = 0 - player.rect.centerx
         offset_agua_y = 0 - player.rect.centery
 
-        if player.mask.overlap_area(agua.mask, (offset_agua_x, offset_agua_y)) > 500:
+        if player.mask.overlap_area(agua.mask, (offset_agua_x, offset_agua_y)) > 500 and ColetouAgua == False:
             colidindo = True
             x_antigo, y_antigo = player.ultima_pos(colidindo, x_antigo, y_antigo)
 
         if player.mask.overlap_area(agua.mask, (offset_agua_x, offset_agua_y)) > 0 and ColetouAgua == False:
-            print(player.mask.overlap_area(agua.mask, (offset_agua_x, offset_agua_y)))
             click = True    
             textbox1.surgir_menu(camera_group.hud_surf, click)
 
@@ -444,6 +436,7 @@ while True:
                 if player.rect.collidepoint(650, 1165):
                     colisao, contador_mapas = troca_mapa(colisao_luzpuzzle, camera_group, 15, 20, 655, 125, player)
                     gamemaps.map = "luzgema"
+                    textbox_surgiu = False
 
                     sprites_cogumelos == False
                     for cogumelo in cogumelos:
@@ -464,6 +457,7 @@ while True:
 
             if colisao == False:
                 colisao_luzgema = gamemaps.Colisao_luzgema((0,0), camera_group)
+                textboxluzgema = Textbox((-10,-10), 0)
                 colisao = True
 
             if GemaLuz == False:
@@ -473,15 +467,16 @@ while True:
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.luzgema.limites, gamemaps.luzgema.mapa, colisao_luzgema, camera_group, colidindo, incapacitada)
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_luzgema, indice, checkpos)
 
+
+
             if player.rect.colliderect(gema_luz):
-                Fade, ate = camera_group.fade(1280, 720, 0)
-                print(Fade, "||", ate)
-                gema_luz.kill()
-                if Fade:
-                    ColetouLuz = True
-                    gamearea = "lobby"
-                    gamemaps.map = "lobby"
-                    colisao, contador_mapas = troca_mapa(colisao_luzgema, camera_group, 5, 15, 1035, 2135, player)
+                gema_luz.kill()   
+                ColetouLuz = True
+                gamearea = "lobby"
+                gamemaps.map = "lobby"
+                colisao, contador_mapas = troca_mapa(colisao_luzgema, camera_group, 5, 15, 1035, 2135, player)
+                print(textbox_surgiu)
+                textbox_surgiu = textboxluzgema.surgir(camera_group.hud_surf, textbox_surgiu)
 
 
             
@@ -527,6 +522,7 @@ while True:
         if gamemaps.map == "fogo2":
             if colisao == False:
                 colisao_fogo2 = gamemaps.Colisao_fogo2((0,0), camera_group)
+                textboxfogogema = Textbox((-10,-10), 0)
                 colisao = True
 
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.fogo2.limites, gamemaps.fogo2.mapa, colisao_fogo2, camera_group, colidindo, incapacitada)
@@ -537,17 +533,16 @@ while True:
             if GemaFogo == False:
                 GemaFogo = True
                 gema_fogo = Gema((662,459), camera_group, gamemaps.fogo2.gema)
+
             if player.rect.colliderect(gema_fogo):
                 Fade, ate = camera_group.fade(1280, 720, 0)
-                print(Fade, "||", ate)
                 gema_fogo.kill()
                 if Fade:
                     ColetouFogo = True
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
                     colisao, contador_mapas = troca_mapa(colisao_fogo2, camera_group, 5, 15, 1035, 2135, player)
-
-
+                    textbox_surgiu =  textboxfogogema.surgir(camera_group.hud_surf, textbox_surgiu)
 
 
             #fogo 2 para fogo 1
@@ -568,63 +563,85 @@ while True:
         if gamemaps.map == "agua1":
             if colisao == False:
                 colisao_agua1 = gamemaps.Colisao_agua1((0,0), camera_group)
+                pagina8 = Pagina((841, 202), camera_group, 0)
                 colisao = True
 
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player,  gamemaps.agua1.limites, gamemaps.agua1.mapa, colisao_agua1, camera_group, colidindo, incapacitada)
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua1, indice, checkpos)
 
+            p8 = pagina8.interact(player, camera_group.hud_surf, p8)
+
             #agua 1 para agua 2
             if player.rect.collidepoint(1281, 897):
                 colisao, contador_mapas = troca_mapa(colisao_agua1, camera_group, 1045, 460, 1685, 820, player)
                 gamemaps.map = "agua2"
+                pagina8.kill()
             elif player.rect.collidepoint(411, 907):
                 colisao, contador_mapas = troca_mapa(colisao_agua1, camera_group, 0, 460, 640, 820, player)
                 gamemaps.map = "agua2"
+                pagina8.kill()
             
             #agua 1 para lobby
             elif player.rect.collidepoint(841, 1552):
                 colisao, contador_mapas = troca_mapa(colisao_agua1, camera_group, 465, 15, 1100, 230, player)
                 gamearea = "lobby"
                 gamemaps.map = "lobby"
+                pagina8.kill()
 
 
         #################### MAPA AGUA 2 ####################  
         elif gamemaps.map == "agua2":
             if colisao == False:
                 colisao_agua2 = gamemaps.Colisao_agua2((0,0), camera_group)
+                pagina9 = Pagina((835, 350), camera_group, 0)
+                pagina10 = Pagina((1475, 350), camera_group, 0)
                 colisao = True
 
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.agua2.limites, gamemaps.agua2.mapa, colisao_agua2, camera_group, colidindo, incapacitada)
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua2, indice, checkpos)
 
+            p9 = pagina8.interact(player, camera_group.hud_surf, p9)
+            p10 = pagina8.interact(player, camera_group.hud_surf, p10)
+
             #agua 2 para agua 3a
             if player.rect.collidepoint(260, 350):
                 colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 55, 1200, 970, 1630, player)
                 gamemaps.map = "agua3a"
+                pagina9.kill()
+                pagina10.kill()
 
             #agua 2 para agua 3b
             elif player.rect.collidepoint(2070, 350):
                 colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 10, 1200, 330, 1630, player)
                 gamemaps.map = "agua3b"
+                pagina9.kill()
+                pagina10.kill()
 
             #agua 2 para agua 1
             elif player.rect.collidepoint(1615, 815):
                 colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 425, 545, 1195, 895, player)
                 gamemaps.map = "agua1"
+                pagina9.kill()
+                pagina10.kill()
             
             elif player.rect.collidepoint(715, 815):
                 colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 10, 535, 480, 895, player)
                 gamemaps.map = "agua1"
+                pagina9.kill()
+                pagina10.kill()
 
         
         #################### MAPA AGUA 3A ####################
         elif gamemaps.map == "agua3a":
             if colisao == False:
                 colisao_agua3a = gamemaps.Colisao_agua3a((0,0), camera_group)
+                pagina11 = Pagina((80, 235), camera_group, 0)
                 colisao = True
 
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.agua3a.limites, gamemaps.agua3a.mapa, colisao_agua3a, camera_group, colidindo, incapacitada)
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua3a, indice, checkpos)
+
+            p11 = pagina11.interact(player, camera_group.hud_surf, p11)
 
             #agua 3a para agua puzzle
             if player.rect.collidepoint(525, 105):
@@ -641,11 +658,14 @@ while True:
         elif gamemaps.map == "agua3b":
             if colisao == False:
                 colisao_agua3b = gamemaps.Colisao_agua3b((0,0), camera_group)
+                pagina12 = Pagina((1240, 235), camera_group, 0)
                 colisao = True
 
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.agua3b.limites, gamemaps.agua3b.mapa, colisao_agua3b, camera_group, colidindo, incapacitada)
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua3b, indice, checkpos)
         
+            p12 = pagina11.interact(player, camera_group.hud_surf, p12)
+
             #agua 3b para agua puzzle
             if player.rect.collidepoint(525, 105):
                 colisao, contador_mapas = troca_mapa(colisao_agua3b, camera_group, 1075, 0, 1995, 350, player)
@@ -724,17 +744,31 @@ while True:
                 
             delay_empurrar += 1
 
+            #agua puzzle para agua 3a
+            if player.rect.collidepoint(115, 1305):
+                colisao, contador_mapas = troca_mapa(colisao_aguapuzzle, camera_group, 0, 0, 525, 170, player)
+                gamemaps.map = "agua3a"
+                for i in range(len(pedras)):
+                    pedras[i].kill()
+                sprites_aguapuzzle = False
 
-            # if player.rect.collidepoint(115, 1305):
-            #     camera_group.camera_check(0, 0)
-            #     gamemaps.map = "agua3a"
-            #     contador_mapas = 0
-            #     player.rect.centerx = 525
-            #     player.rect.centery = 170
-            #     for i in range(len(pedras)):
-            #         pedras[i].kill()
-            #     sprites_aguapuzzle = False
+            #agua puzzle para agua gema
+            if player.rect.collidepoint(1295, 45):
+                colisao, contador_mapas = troca_mapa(colisao_aguapuzzle, camera_group, 0, 180, 645, 750, player)
+                gamemaps.map = "aguagema"
+                for i in range(len(pedras)):
+                    pedras[i].kill()
+                sprites_aguapuzzle = False
 
+     #################### MAPA AGUA GEMA ####################
+        elif gamemaps.map == "aguagema":
+
+            if colisao == False:
+                    colisao_aguagema = gamemaps.Colisao_aguagema((0,0), camera_group)
+                    colisao = True
+
+            contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.aguagema.limites, gamemaps.aguagema.mapa, colisao_aguagema, camera_group, colidindo, incapacitada)
+            checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_aguagema, indice, checkpos)
 
 
     ####################          ####################
@@ -744,8 +778,7 @@ while True:
     elif gamearea == "ar":
         
     
-    #################### MAPA AR 1 ####################
-
+    #################### MAPA AR 1 #################### 
         if gamemaps.map == "ar1":
             if colisao == False:
                 colisao_ar1 = gamemaps.Colisao_ar1((0,0), camera_group)
@@ -829,34 +862,19 @@ while True:
             if GemaAr == False:
                 GemaAr = True
                 gema_ar = Gema((662,459), camera_group, gamemaps.argema.gema)
-            if player.rect.colliderect(gema_ar.rect):
-                ColetouAr = True
-                gema_ar.kill()
-                Fade, ate = camera_group.fade(1280, 720, 300)
-
-                if Fade:
-                    ColetouLuz = True
-                    gamearea = "lobby"
-                    gamemaps.map = "lobby"
-                    colisao, contador_mapas = troca_mapa(colisao_argema, camera_group, 5, 15, 1245, 1300, player)
-
-                    if colisao == False:
-                        if ColetouAgua == False:
-                            colisao_lobby = gamemaps.Colisao_lobby((0,0), camera_group)
-                        elif ColetouAgua == True:
-                            colisao_lobby.kill()
-                            colisao_lobby = gamemaps.Colisao_lobby_Sem_Agua((0,0), camera_group)
-                        colisao = True
-                    
-                    if ColetouLuz == False:
-                        camera_group.fade(1280, 720, 230)
-
-                    contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.lobby.limites, gamemaps.lobby.mapa, colisao_lobby, camera_group, colidindo, incapacitada)
-                    checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_lobby, indice, checkpos)
 
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.argema.limites, gamemaps.argema.mapa, colisao_argema, camera_group, colidindo, incapacitada)
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_argema, indice, checkpos)
             
+            if player.rect.colliderect(gema_ar):
+                Fade, ate = camera_group.fade(1280, 720, 0)
+                gema_ar.kill()
+                if Fade:
+                    ColetouFogo = True
+                    gamearea = "lobby"
+                    gamemaps.map = "lobby"
+                    colisao, contador_mapas = troca_mapa(colisao_argema, camera_group, 5, 15, 1315, 1340, player)
+
 
             
 

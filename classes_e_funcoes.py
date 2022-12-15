@@ -26,7 +26,17 @@ class Player(pygame.sprite.Sprite):
             if self.mask.overlap_area(area_gelo.mask, (offsetx, offsety)) > 200:
                 # print("esta no gelo")
                 esta_no_gelo = True
-            return esta_no_gelo        
+            return esta_no_gelo 
+
+    def check_colisao2(self, mapa_colisao):
+        colidindo = False
+        offsetx = 0 - self.rect.centerx
+        offsety = 0 - self.rect.centery
+
+        if self.mask.overlap_area(mapa_colisao.mask, (offsetx, offsety)) > 100:
+            colidindo = True            
+        return colidindo
+
 
     def input(self, incapacitada, colidindo, checkposx, checkposy):
 
@@ -172,7 +182,7 @@ class Player(pygame.sprite.Sprite):
 
     def update_no_gelo(self, incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, mapa_parede, indice, checkpos, ult_checkpos, esta_no_gelo, area_gelo):
         
-        colidindo = self.check_colisao(mapa_parede)
+        colidindo = self.check_colisao2(mapa_parede)
         checkposx, checkposy, andando_horizontal, andando_vertical = self.input(incapacitada, colidindo, checkposx, checkposy)
         x_antigo, y_antigo = self.ultima_pos(colidindo, x_antigo, y_antigo)
         indice = self.troca_sprite(checkposx, checkposy, andando_horizontal, andando_vertical, indice)
@@ -298,44 +308,6 @@ class Pedra(pygame.sprite.Sprite):
         return delay_empurrar
 
 
-class Pedra_lobby(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
-        super().__init__(group)
-        self.image = pygame.image.load("sprites\pedra redonda do lobby.png").convert_alpha()
-        self.rect = self.image.get_rect(center = pos)
-        self.mask = pygame.mask.from_surface(self.image)
-        self.pode_empurrar = True
-
-    def movimento_terra_lobby(self, checkpos, delay_empurrar):
-        keys = pygame.key.get_pressed()
-
-        if checkpos == "up" and keys[pygame.K_x]:
-            self.rect.centery -= 46
-            delay_empurrar = 0
-
-
-        elif checkpos == "down" and keys[pygame.K_x]:
-            self.rect.centery += 46
-            delay_empurrar = 0
-
-        elif checkpos == "right" and keys[pygame.K_x]:
-                self.rect.centerx += 55
-                delay_empurrar = 0
-
-        elif checkpos == "left" and keys[pygame.K_x]:
-                self.rect.centerx -= 55
-                delay_empurrar = 0
-
-
-        return delay_empurrar
-
-class Arvorezinha(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
-        super().__init__(group)
-        self.image = pygame.image.load("sprites\Arvorezinha.png").convert_alpha()
-        self.rect = self.image.get_rect(center = pos)
-        self.mask = pygame.mask.from_surface(self.image)
-
 
     def check_pos_futura(self, lista_pedras, checkpos):
         lista_pedras.remove(self)
@@ -375,6 +347,48 @@ class Arvorezinha(pygame.sprite.Sprite):
         lista_pedras.append(self)
 
         return self.pode_empurrar
+
+
+
+class Pedra_lobby(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = pygame.image.load("sprites\pedra redonda do lobby.png").convert_alpha()
+        self.rect = self.image.get_rect(center = pos)
+        self.mask = pygame.mask.from_surface(self.image)
+        self.pode_empurrar = True
+
+    def movimento_terra_lobby(self, checkpos, delay_empurrar):
+        keys = pygame.key.get_pressed()
+
+        if checkpos == "up" and keys[pygame.K_x]:
+            self.rect.centery -= 46
+            delay_empurrar = 0
+
+
+        elif checkpos == "down" and keys[pygame.K_x]:
+            self.rect.centery += 46
+            delay_empurrar = 0
+
+        elif checkpos == "right" and keys[pygame.K_x]:
+                self.rect.centerx += 55
+                delay_empurrar = 0
+
+        elif checkpos == "left" and keys[pygame.K_x]:
+                self.rect.centerx -= 55
+                delay_empurrar = 0
+
+
+        return delay_empurrar
+
+class Arvorezinha(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = pygame.image.load("sprites\Arvorezinha.png").convert_alpha()
+        self.rect = self.image.get_rect(center = pos)
+        self.mask = pygame.mask.from_surface(self.image)
+
+
 
 class Gema(pygame.sprite.Sprite):
     def __init__(self, pos, group, elemento):
@@ -496,15 +510,15 @@ class CameraGroup(pygame.sprite.Group):
         tela.blit(self.ground_surf, ground_offset)
         
         #desenha outros sprites, se houverem
-
         for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.center - self.offset
             tela.blit(sprite.image, offset_pos)
 
+
+
         hud_offsetx = self.hud_rect.centerx - self.half_w
         hud_offsety = self.hud_rect.centery - self.half_h
 
-        
         tela.blit(self.hud_surf, (hud_offsetx, hud_offsety))
 
         return contador_mapas
@@ -690,6 +704,18 @@ class GameMaps():
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
     
+    class aguagema():
+        limites = [621, 621, 326, 546]
+        mapa = "mapas_imagens aumentado\Agua\Agua gema.png"
+    
+    class Colisao_aguagema(pygame.sprite.Sprite):
+        def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("mapas_imagens aumentado\Agua\Agua gema parede.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+
+    
     class ar1():
         limites = [621, 621, 321, 556]
         mapa = "mapas_imagens aumentado\Ar\Ar 1.png"
@@ -774,14 +800,14 @@ class GameMaps():
 
 
     class terragema():
-        limites = [625, 680, 320, 514]
+        limites = [625, 680, 320, 501]
         mapa = "mapas_imagens aumentado\Terra\Terra gema.png"
         gema = "sprites\GemaTerra.png"
 
     class Colisao_terragema(pygame.sprite.Sprite):
         def __init__(self, pos, group):
             super().__init__(group)
-            self.image = pygame.image.load("mapas_imagens aumentado\Agua\Terra gema parede.png").convert_alpha()
+            self.image = pygame.image.load("mapas_imagens aumentado\Terra\Terra gema parede.png").convert_alpha()
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
 
