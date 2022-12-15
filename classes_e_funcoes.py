@@ -387,26 +387,28 @@ class CameraGroup(pygame.sprite.Group):
         self.half_h = self.display_surface.get_size()[1]/2
 
     def fade(self, width, height, alpha): 
+        Fade = False
+        ate = 0
         self.hud_surf = pygame.Surface((width, height))
         self.hud_surf.fill((0,0,0))
         self.hud_surf.set_alpha(alpha)
         self.display_surface.blit(self.hud_surf, (0,0))
-        pygame.time.delay(10)
+        for i in range(0, 1200):
+            ate += 1
+            if ate >= 1180:
+                Fade = True
+
+        return Fade, ate
 
     def fade_out(self, width, height):
-        self.hud_surf = pygame.Surface((width, height))
-        self.hud_surf.fill((0,0,0))
-        for i in range(200):
-            self.hud_surf.set_alpha(i)
-            self.display_surface.blit(self.hud_surf, (0,0))
-            pygame.time.delay(10)
+        fade = pygame.Surface((width, height))
+        fade.fill((0,0,0))
+        for i in range(0, 100):
+            fade.set_alpha(i)
+            self.display_surface.blit(fade, (0,0))
+            pygame.time.delay(20)
+        return i
     
-    def fade_in(self, width, heigth):
-        self.hud_surf = pygame.Surface((width, height))
-        self.hud_surf.fill((0,0,0))
-
-    
-   
 
     def camera_centrada(self, target, limites):
         
@@ -759,8 +761,5 @@ def carrega_mapa_com_gelo(contador_mapas, tela, player, limites, mapa, mapa_pare
     pygame.display.update()
 
     return contador_mapas, colidindo, esta_no_gelo
-
-
-
 
 
