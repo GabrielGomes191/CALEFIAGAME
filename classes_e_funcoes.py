@@ -9,7 +9,6 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
         self.speed = 5
 
-
     def check_colisao(self, mapa_colisao):
         colidindo = False
         offsetx = 0 - self.rect.centerx
@@ -17,7 +16,6 @@ class Player(pygame.sprite.Sprite):
 
         if self.mask.overlap_area(mapa_colisao.mask, (offsetx, offsety)) > 200:
             colidindo = True            
-
         return colidindo
 
     def check_colisao_gelo(self, area_gelo):
@@ -28,7 +26,6 @@ class Player(pygame.sprite.Sprite):
             if self.mask.overlap_area(area_gelo.mask, (offsetx, offsety)) > 200:
                 # print("esta no gelo")
                 esta_no_gelo = True
-
             return esta_no_gelo        
 
     def input(self, incapacitada, colidindo, checkposx, checkposy):
@@ -240,22 +237,31 @@ class Textbox(pygame.sprite.Sprite):
         self.caixa = pygame.image.load(self.lista_caixas[id]).convert_alpha()
         self.rect = self.caixa.get_rect(center = pos)
         self.id = id
+        self.surgiu = False
         
     def surgir(self, superficie, textbox_surgiu):
         transparente = (0,0,0,0)
         keys = pygame.key.get_pressed()
 
-        # print(textbox_surgiu)
         if textbox_surgiu == False:
-            for i in range(60):
-                superficie.blit(self.caixa, (500, 500))
-            textbox_surgiu = True
-        
+            superficie.blit(self.caixa, (500, 500))
 
         if keys[pygame.K_ESCAPE]:
             superficie.fill(transparente)
+            textbox_surgiu = True
         
         return textbox_surgiu
+
+    def surgir_menu(self, superficie, click):
+        transparente = (0,0,0,0)
+        keys = pygame.key.get_pressed()
+
+        if self.surgiu == False and click:
+            superficie.blit(self.caixa, (500, 500))
+
+        elif click == False:
+            superficie.fill(transparente)
+            self.surgiu = True
         
 class Pedra(pygame.sprite.Sprite):
     def __init__(self, pos, group):
@@ -268,28 +274,68 @@ class Pedra(pygame.sprite.Sprite):
     def movimento(self, checkpos, delay_empurrar, player):
         keys = pygame.key.get_pressed()
 
-        if checkpos == "up" and keys[pygame.K_RSHIFT] and self.rect.centery >= 764 and player.rect.centery > self.rect.centery:
+        if checkpos == "up" and keys[pygame.K_x] and self.rect.centery >= 764 and player.rect.centery > self.rect.centery:
             self.rect.centery -= 46
             delay_empurrar = 0
             self.direcao_pedra = "cima"
 
 
-        elif checkpos == "down" and keys[pygame.K_RSHIFT] and self.rect.centery <= 902 and player.rect.centery < self.rect.centery:
+        elif checkpos == "down" and keys[pygame.K_x] and self.rect.centery <= 902 and player.rect.centery < self.rect.centery:
             self.rect.centery += 46
             delay_empurrar = 0
             self.direcao_pedra = "baixo"
 
-        elif checkpos == "right" and keys[pygame.K_RSHIFT] and self.rect.centerx > 1127 and player.rect.centerx < self.rect.centerx:
+        elif checkpos == "right" and keys[pygame.K_x] and self.rect.centerx > 1127 and player.rect.centerx < self.rect.centerx:
                 self.rect.centerx += 55
                 delay_empurrar = 0
                 self.direcao_pedra = "direita"
 
-        elif checkpos == "left" and keys[pygame.K_RSHIFT] and self.rect.centerx < 1402 and player.rect.centerx > self.rect.centerx:
+        elif checkpos == "left" and keys[pygame.K_x] and self.rect.centerx < 1402 and player.rect.centerx > self.rect.centerx:
                 self.rect.centerx -= 55
                 delay_empurrar = 0
                 self.direcao_pedra = "esquerda"
 
         return delay_empurrar
+
+
+class Pedra_lobby(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = pygame.image.load("sprites\pedra redonda do lobby.png").convert_alpha()
+        self.rect = self.image.get_rect(center = pos)
+        self.mask = pygame.mask.from_surface(self.image)
+        self.pode_empurrar = True
+
+    def movimento_terra_lobby(self, checkpos, delay_empurrar):
+        keys = pygame.key.get_pressed()
+
+        if checkpos == "up" and keys[pygame.K_x]:
+            self.rect.centery -= 46
+            delay_empurrar = 0
+
+
+        elif checkpos == "down" and keys[pygame.K_x]:
+            self.rect.centery += 46
+            delay_empurrar = 0
+
+        elif checkpos == "right" and keys[pygame.K_x]:
+                self.rect.centerx += 55
+                delay_empurrar = 0
+
+        elif checkpos == "left" and keys[pygame.K_x]:
+                self.rect.centerx -= 55
+                delay_empurrar = 0
+
+
+        return delay_empurrar
+
+class Arvorezinha(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = pygame.image.load("sprites\Arvorezinha.png").convert_alpha()
+        self.rect = self.image.get_rect(center = pos)
+        self.mask = pygame.mask.from_surface(self.image)
+
 
     def check_pos_futura(self, lista_pedras, checkpos):
         lista_pedras.remove(self)
@@ -386,10 +432,13 @@ class CameraGroup(pygame.sprite.Group):
         self.half_w = self.display_surface.get_size()[0]/2
         self.half_h = self.display_surface.get_size()[1]/2
 
+        self.hud_surf = pygame.image.load("sprites\Adan.png")
+        self.hud_rect = self.hud_surf.get_rect(topleft = (0, 0))
+
     def fade(self, width, height, alpha): 
         Fade = False
         ate = 0
-        self.hud_surf = pygame.Surface((width, height))
+        #self.hud_surf = pygame.Surface((width, height))
         self.hud_surf.fill((0,0,0))
         self.hud_surf.set_alpha(alpha)
         self.display_surface.blit(self.hud_surf, (0,0))
@@ -400,14 +449,14 @@ class CameraGroup(pygame.sprite.Group):
 
         return Fade, ate
 
-    def fade_out(self, width, height):
-        fade = pygame.Surface((width, height))
-        fade.fill((0,0,0))
-        for i in range(0, 100):
-            fade.set_alpha(i)
-            self.display_surface.blit(fade, (0,0))
-            pygame.time.delay(20)
-        return i
+    # def fade_out(self, width, height):
+        
+    #     fade.fill((0,0,0))
+    #     for i in range(0, 100):
+    #         fade.set_alpha(i)
+    #         self.display_surface.blit(fade, (0,0))
+    #         pygame.time.delay(20)
+    #     return i
     
 
     def camera_centrada(self, target, limites):
@@ -435,9 +484,7 @@ class CameraGroup(pygame.sprite.Group):
 
             self.ground_surf = pygame.image.load(mapa)
             self.ground_rect = self.ground_surf.get_rect(center = (0,0))
-            
-            self.hud_surf = pygame.image.load("sprites\Adan.png")
-            self.hud_rect = self.hud_surf.get_rect(topleft = (0, 0))
+
 
             contador_mapas = contador_mapas + 1
 
@@ -480,6 +527,14 @@ class GameMaps():
             self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby paredes_sem_agua.png").convert_alpha()
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
+
+    class Colisao_lobby_agua(pygame.sprite.Sprite):
+        def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby parede agua.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+
 
     class Colisao_lobby_Sem_Agua(pygame.sprite.Sprite):
         def __init__(self, pos, group):
