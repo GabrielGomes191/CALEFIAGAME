@@ -526,10 +526,28 @@ class CameraGroup(pygame.sprite.Group):
 
 class GameMaps():
     def __init__(self):
-        self.map = "lobby"
+        self.map = "floresta"
     
         # limites = [x_menor, x_maior, y_menor, y_maior]
 
+    class Colisao_primaria(pygame.sprite.Sprite):
+        def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("sprites\Adan.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+
+    class floresta():
+        limites = [626, 1055, 321, 1711]
+        mapa = 'mapas_imagens aumentado\Floresta\MapaFloresta.png'
+
+    class Colisao_floresta(pygame.sprite.Sprite):
+        def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("mapas_imagens aumentado\Floresta\MapaFlorestaColisao.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+    
     class lobby():
         limites = [622, 1828, 334, 2100]
         mapa = 'mapas_imagens aumentado\lobby\lobby completo.png'
@@ -707,6 +725,7 @@ class GameMaps():
     class aguagema():
         limites = [621, 621, 326, 546]
         mapa = "mapas_imagens aumentado\Agua\Agua gema.png"
+        gema = "sprites\GemaAgua.png"
     
     class Colisao_aguagema(pygame.sprite.Sprite):
         def __init__(self, pos, group):
