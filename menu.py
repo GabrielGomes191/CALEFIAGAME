@@ -9,10 +9,10 @@ from main import *
 
 #musica do menu
 p_musica = True
-mixer.init()
-mixer.music.load("assets_menu\menu.wav")
-mixer.music.set_volume(0.5)
-mixer.music.play(-1)
+# mixer.init()
+# mixer.music.load("assets_menu\menu.wav")
+# mixer.music.set_volume(0.5)
+# mixer.music.play(-1)
 
 #dimensões
 janela_largura = 1280
@@ -59,8 +59,8 @@ while True:
     
     #botao play
     if click.is_over_object(play) and click.is_button_pressed(True):
-        mixer.music.stop()
-        jogo()
+        #mixer.music.stop()
+        Crypta()
         
     #botao exit
     if click.is_over_object(exit) and click.is_button_pressed(True):

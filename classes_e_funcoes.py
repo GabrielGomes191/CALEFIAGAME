@@ -243,7 +243,9 @@ class Pagina(pygame.sprite.Sprite):
 class Textbox(pygame.sprite.Sprite):
     def __init__(self, pos, id):
 
-        self.lista_caixas = ["sprites textbox\id0.png"]
+        self.lista_caixas = ["sprites textbox\id0.png", "sprites textbox\TextBoxEscuro.png", "sprites textbox\TextBoxFogo.png", "sprites textbox\TextBoxPedras.png", 
+        "sprites textbox\TextBoxAgua.png", "sprites textbox\TextBoxCristalLuz.png", "sprites textbox\TextBoxCristalFogo.png", "sprites textbox\TextBoxCristalTerra.png",
+         "sprites textbox\TextBoxCristalAgua.png", "sprites textbox\TextBoxCristalAr.png"]
         self.caixa = pygame.image.load(self.lista_caixas[id]).convert_alpha()
         self.rect = self.caixa.get_rect(center = pos)
         self.id = id
@@ -254,9 +256,9 @@ class Textbox(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
 
         if textbox_surgiu == False:
-            superficie.blit(self.caixa, (500, 500))
+            superficie.blit(self.caixa, (400, 500))
 
-        if keys[pygame.K_ESCAPE]:
+        if keys[pygame.K_z]:
             superficie.fill(transparente)
             textbox_surgiu = True
         
@@ -313,7 +315,6 @@ class Pedra(pygame.sprite.Sprite):
         lista_pedras.remove(self)
 
         for outras_pedras in lista_pedras:
-            #print(self.rect.centery - 46, outras_pedras.rect.centery)
 
             if checkpos == "up":
                 if self.rect.centery - 46 == outras_pedras.rect.centery and self.rect.centerx == outras_pedras.rect.centerx:
@@ -498,8 +499,6 @@ class CameraGroup(pygame.sprite.Group):
 
             self.ground_surf = pygame.image.load(mapa)
             self.ground_rect = self.ground_surf.get_rect(center = (0,0))
-
-
             contador_mapas = contador_mapas + 1
 
         self.camera_centrada(player, limites)
@@ -839,7 +838,6 @@ def carrega_mapa(contador_mapas, tela, player, limites, mapa, mapa_parede, camer
     contador_mapas = camera_group.custom_draw(tela, player, limites, mapa, contador_mapas)
 
     colidindo = player.check_colisao(mapa_parede)
-    #checkposx, checkposy, x_antigo, y_antigo = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, mapa_parede)
     pygame.display.update()
 
     return contador_mapas, colidindo
@@ -857,7 +855,6 @@ def carrega_mapa_com_gelo(contador_mapas, tela, player, limites, mapa, mapa_pare
     contador_mapas = camera_group.custom_draw(tela, player, limites, mapa, contador_mapas)
     colidindo = player.check_colisao(mapa_parede)
     esta_no_gelo = player.check_colisao_gelo(area_gelo)
-    #checkposx, checkposy, x_antigo, y_antigo = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, mapa_parede)
     pygame.display.update()
 
     return contador_mapas, colidindo, esta_no_gelo

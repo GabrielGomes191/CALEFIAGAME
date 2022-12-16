@@ -13,7 +13,7 @@ from funcoes_invaders_3 import *
 #     return proximo_mapa, contador_mapas, nova_pos,
 
 
-def jogo():
+def Crypta():
     pygame.init()
     tela = pygame.display.set_mode((1280,720))
     superficie = pygame.display.get_surface()
@@ -44,8 +44,8 @@ def jogo():
 
     #variaveis Coletou emas 
     ColetouLuz = False
-    ColetouTerra = False
     ColetouFogo = False
+    ColetouTerra = False
     ColetouAgua = False
     ColetouAr = False
 
@@ -146,7 +146,11 @@ def jogo():
                 agua = gamemaps.Colisao_lobby_agua((0,0), camera_group)
                 colisao = True
 
-            textbox1 = Textbox((0,0), 0)
+            textboxescuridao = Textbox((0,0), 1)
+            textboxesplanta = Textbox((0,0), 2)
+            textboxpedra = Textbox((0,0), 3)
+            textboxagua = Textbox((0,0), 4)
+
             
             ult_checkpos = Player.ultimo_checkpos(checkposx, checkposy, ult_checkpos)
             
@@ -159,10 +163,10 @@ def jogo():
             #Escuridao roadblock#
             if player.rect.collidepoint(2330, 1820) and ColetouLuz == False:
                 click = True
-                textbox1.surgir_menu(camera_group.hud_surf, click)
+                textboxescuridao.surgir_menu(camera_group.hud_surf, click)
 
             elif ColetouLuz == False and click == False:
-                textbox1.surgir_menu(camera_group.hud_surf, click)
+                textboxescuridao.surgir_menu(camera_group.hud_surf, click)
 
             #Pedra roadblock#
             offset_pedra0_x = pedra0.rect.centerx - player.rect.centerx
@@ -177,10 +181,10 @@ def jogo():
 
 
             if player.mask.overlap_area(pedra0.mask, (offset_pedra0_x, offset_pedra0_y)) > 0 and ColetouTerra == False:
-                textbox1.surgir_menu(camera_group.hud_surf, click)
+                textboxpedra.surgir_menu(camera_group.hud_surf, click)
 
             elif ColetouTerra == False and click == False:
-                textbox1.surgir_menu(camera_group.hud_surf, click)
+                textboxpedra.surgir_menu(camera_group.hud_surf, click)
 
             delay_empurrar += 1
 
@@ -193,10 +197,10 @@ def jogo():
                 x_antigo, y_antigo = player.ultima_pos(colidindo, x_antigo, y_antigo)
 
             if player.mask.overlap_area(arvore.mask, (offset_arvore_x, offset_arvore_y)) > 0 and ColetouFogo == False:
-                textbox1.surgir_menu(camera_group.hud_surf, click)
+                textboxesplanta.surgir_menu(camera_group.hud_surf, click)
             
             elif ColetouFogo == False and click == False:
-                textbox1.surgir_menu(camera_group.hud_surf, click)
+                textboxesplanta.surgir_menu(camera_group.hud_surf, click)
 
             elif player.mask.overlap_area(arvore.mask, (offset_arvore_x, offset_arvore_y)) > 0 and ColetouFogo == True and click:
                 arvore.kill()
@@ -214,7 +218,7 @@ def jogo():
 
             if player.mask.overlap_area(agua.mask, (offset_agua_x, offset_agua_y)) > 0 and ColetouAgua == False:
                 click = True    
-                textbox1.surgir_menu(camera_group.hud_surf, click)
+                textboxagua.surgir_menu(camera_group.hud_surf, click)
 
 
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.lobby.limites, gamemaps.lobby.mapa, colisao_lobby, camera_group, colidindo, incapacitada)
@@ -489,7 +493,7 @@ def jogo():
 
                 if colisao == False:
                     colisao_luzgema = gamemaps.Colisao_luzgema((0,0), camera_group)
-                    textboxluzgema = Textbox((-10,-10), 0)
+                    textboxluzgema = Textbox((-10,-10), 5)
                     colisao = True
 
                 if GemaLuz == False:
@@ -499,17 +503,21 @@ def jogo():
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.luzgema.limites, gamemaps.luzgema.mapa, colisao_luzgema, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_luzgema, indice, checkpos)
 
+                keys = pygame.key.get_pressed()
 
 
                 if player.rect.colliderect(gema_luz):
+                    textbox_surgiu = textboxluzgema.surgir(camera_group.hud_surf, textbox_surgiu)
                     gema_luz.kill()   
                     ColetouLuz = True
+                    camera_group.fade(1280, 720, 500)
+
+                if keys[pygame.K_z] and ColetouLuz:
+                    print("sim")
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
                     colisao, contador_mapas = troca_mapa(colisao_luzgema, camera_group, 5, 15, 1035, 2135, player)
-                    camera_group.fade(1280, 720, 500)
-                    # print(textbox_surgiu)
-                    # textbox_surgiu = textboxluzgema.surgir(camera_group.hud_surf, textbox_surgiu)
+                    textbox_surgiu = False
 
 
                 
@@ -552,12 +560,13 @@ def jogo():
             if gamemaps.map == "fogo2":
                 if colisao == False:
                     colisao_fogo2 = gamemaps.Colisao_fogo2((0,0), camera_group)
-                    textboxfogogema = Textbox((-10,-10), 0)
+                    textboxfogogema = Textbox((-10,-10), 6)
                     colisao = True
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.fogo2.limites, gamemaps.fogo2.mapa, colisao_fogo2, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_fogo2, indice, checkpos)
 
+                keys = pygame.key.get_pressed()
 
 
                 if GemaFogo == False:
@@ -567,11 +576,13 @@ def jogo():
                 if player.rect.colliderect(gema_fogo):
                     gema_fogo.kill()
                     ColetouFogo = True
+                    textbox_surgiu =  textboxfogogema.surgir(camera_group.hud_surf, textbox_surgiu)
+
+                if keys[pygame.K_z] and ColetouFogo:
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
                     colisao, contador_mapas = troca_mapa(colisao_fogo2, camera_group, 5, 15, 1035, 2135, player)
-                    textbox_surgiu =  textboxfogogema.surgir(camera_group.hud_surf, textbox_surgiu)
-                    
+                    textbox_surgiu = False
 
                 #fogo 2 para fogo 1
                 if player.rect.collidepoint(650, 770):
@@ -787,13 +798,17 @@ def jogo():
                     for i in range(len(pedras)):
                         pedras[i].kill()
                     sprites_aguapuzzle = False
+                    
 
         #################### MAPA AGUA GEMA ####################
             elif gamemaps.map == "aguagema":
 
                 if colisao == False:
                         colisao_aguagema = gamemaps.Colisao_aguagema((0,0), camera_group)
+                        textboxaguagema = Textbox((0,0), 8)
                         colisao = True
+
+                keys = pygame.key.get_pressed()
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.aguagema.limites, gamemaps.aguagema.mapa, colisao_aguagema, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_aguagema, indice, checkpos)
@@ -805,8 +820,12 @@ def jogo():
                 if player.rect.colliderect(gema_agua):
                     gema_agua.kill()
                     ColetouAgua = True
+                    textbox_surgiu = textboxaguagema.surgir(camera_group.hud_surf, textbox_surgiu)
+
+                if keys[pygame.K_z] and ColetouAgua:
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
+                    textbox_surgiu = False
                     colisao, contador_mapas = troca_mapa(colisao_aguagema, camera_group, 5, 15, 1035, 2135, player)
 
 
@@ -896,21 +915,29 @@ def jogo():
             elif gamemaps.map == "argema":
                 if colisao == False:
                     colisao_argema = gamemaps.Colisao_argema((0,0), camera_group)
+                    textboxargema = Textbox((0,0), 9)
                     colisao = True
 
                 if GemaAr == False:
                     GemaAr = True
                     gema_ar = Gema((662,459), camera_group, gamemaps.argema.gema)
 
+                keys = pygame.key.get_pressed()
+
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.argema.limites, gamemaps.argema.mapa, colisao_argema, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_argema, indice, checkpos)
                 
+
                 if player.rect.colliderect(gema_ar):
                     gema_ar.kill()
-                    ColetouFogo = True
+                    ColetouAr = True
+                    textbox_surgiu = textboxargema.surgir(camera_group.hud_surf, textbox_surgiu)
+
+                if keys[pygame.K_z] and ColetouAr:
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
                     colisao, contador_mapas = troca_mapa(colisao_argema, camera_group, 5, 15, 1315, 1340, player)
+                    textbox_surgiu = False
 
 
                 
@@ -1053,13 +1080,17 @@ def jogo():
                         saida = " "
                         colisao, contador_mapas = troca_mapa(colisao_terra2, camera_group, 690, 510, 1735, 870, player)
 
-            #################### MAPA TERRA2 ####################
+
+            #################### MAPA TERRA GEMA ####################
 
             elif gamemaps.map == "terragema":
 
                 if colisao == False:
                     colisao_terragema = gamemaps.Colisao_terragema((0,0), camera_group)
+                    textboxterragema = Textbox((0,0), 7)
                     colisao = True
+
+                keys = pygame.key.get_pressed()
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.terragema.limites, gamemaps.terragema.mapa, colisao_terragema, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_terragema, indice, checkpos)
@@ -1068,17 +1099,23 @@ def jogo():
                     GemaTerra = True
                     gema_terra = Gema((662,459), camera_group, gamemaps.terragema.gema)
 
+
                 if player.rect.colliderect(gema_terra):
+                    textbox_surgiu = textboxterragema.surgir(camera_group.hud_surf, textbox_surgiu)
                     gema_terra.kill()
-                
                     ColetouTerra = True
+
+                if keys[pygame.K_z] and ColetouTerra:
+                    colisao, contador_mapas = troca_mapa(colisao_terragema, camera_group, 5, 15, 1035, 2135, player)
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
-                    colisao, contador_mapas = troca_mapa(colisao_terragema, camera_group, 5, 15, 1035, 2135, player)
+                    textbox_surgiu = False
+
+                    
 
 
         #print(clock)
-        print(player.rect.centerx, player.rect.centery, "###", player.rect.x, player.rect.y, "###", camera_group.offset.x, camera_group.offset.y, gamemaps.map)
+        #print(player.rect.centerx, player.rect.centery, "###", player.rect.x, player.rect.y, "###", camera_group.offset.x, camera_group.offset.y, gamemaps.map)
         # current_time = pygame.time.get_ticks()
         # current_second = int(current_time/1000)
         #if Tempo == current_second:
