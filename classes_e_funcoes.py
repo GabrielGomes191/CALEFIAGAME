@@ -443,12 +443,18 @@ class Lapide(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
 class Pedra_lobby(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, pos, group, luz):
         super().__init__(group)
-        self.image = pygame.image.load("sprites\pedra redonda do lobby.png").convert_alpha()
-        self.rect = self.image.get_rect(center = pos)
-        self.mask = pygame.mask.from_surface(self.image)
-        self.pode_empurrar = True
+        if luz == False:
+            self.image = pygame.image.load("sprites\pedra redonda do lobby.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+            self.pode_empurrar = True
+        elif luz:   
+            self.image = pygame.image.load("sprites\pedra redonda do lobby clara.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+            self.pode_empurrar = True
 
     def movimento_terra_lobby(self, checkpos, delay_empurrar):
         keys = pygame.key.get_pressed()
@@ -474,11 +480,16 @@ class Pedra_lobby(pygame.sprite.Sprite):
         return delay_empurrar
 
 class Arvorezinha(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, pos, group, luz):
         super().__init__(group)
-        self.image = pygame.image.load("sprites\Arvorezinha.png").convert_alpha()
-        self.rect = self.image.get_rect(center = pos)
-        self.mask = pygame.mask.from_surface(self.image)
+        if luz == False:
+            self.image = pygame.image.load("sprites\Arvorezinha.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+        elif luz == True:
+            self.image = pygame.image.load("sprites\Arvorezinha com luz.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
 
 
 
@@ -541,19 +552,19 @@ class CameraGroup(pygame.sprite.Group):
         self.hud_surf = pygame.image.load("sprites\Adan.png")
         self.hud_rect = self.hud_surf.get_rect(topleft = (0, 0))
 
-    # def fade(self, width, height, alpha): 
-    #     Fade = False
-    #     ate = 0
-    #     #self.hud_surf = pygame.Surface((width, height))
-    #     self.hud_surf.fill((0,0,0))
-    #     self.hud_surf.set_alpha(alpha)
-    #     self.display_surface.blit(self.hud_surf, (0,0))
-    #     for i in range(0, 1200):
-    #         ate += 1
-    #         if ate >= 1180:
-    #             Fade = True
+    def fade(self, width, height, alpha): 
+        Fade = False
+        ate = 0
+        #self.hud_surf = pygame.Surface((width, height))
+        self.hud_surf.fill((0,0,0))
+        self.hud_surf.set_alpha(alpha)
+        self.display_surface.blit(self.hud_surf, (0,0))
+        for i in range(0, 1200):
+            ate += 1
+            if ate >= 1180:
+                Fade = True
 
-    #     return Fade, ate
+        return Fade, ate
 
     # def fade_out(self, width, height):
         
@@ -621,7 +632,7 @@ class GameMaps():
     def __init__(self):
         self.map = "floresta"
     
-        # limites = [x_menor, x_maior, y_menor, y_maior]
+        #limites = [x_menor, x_maior, y_menor, y_maior]
 
     class Colisao_primaria(pygame.sprite.Sprite):
         def __init__(self, pos, group):
@@ -652,14 +663,31 @@ class GameMaps():
     class lobby():
         limites = [622, 1828, 334, 2100]
         mapa = 'mapas_imagens aumentado\lobby\lobby completo.png'
-        colisao = "mapas_imagens aumentado\lobby\colisao_lobby.png"
+        mapaclaro = "mapas_imagens aumentado\lobby\lobby completo com luz.png"
 
     class Colisao_lobby(pygame.sprite.Sprite):
         def __init__(self, pos, group):
             super().__init__(group)
-            self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby paredes_sem_agua.png").convert_alpha()
+            self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby paredes.png").convert_alpha()
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
+
+
+    class Colisao_lobby_claro(pygame.sprite.Sprite):
+         def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby paredes com luz.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+
+
+    class Colisao_lobby_Sem_Agua(pygame.sprite.Sprite):
+        def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby paredes_sem_agua com luz.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+
 
     class Colisao_lobby_agua(pygame.sprite.Sprite):
         def __init__(self, pos, group):
@@ -668,17 +696,16 @@ class GameMaps():
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
 
-
-    class Colisao_lobby_Sem_Agua(pygame.sprite.Sprite):
+    class Colisao_lobby_agua_claro(pygame.sprite.Sprite):
         def __init__(self, pos, group):
             super().__init__(group)
-            self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby paredes_sem_agua.png").convert_alpha()
+            self.image = pygame.image.load("mapas_imagens aumentado\lobby\lobby parede agua com luz.png").convert_alpha()
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
 
     class luz1():
         limites = [618, 310, 335, 555]
-        mapa = 'mapas_imagens aumentado\luz\luz 1.png'
+        mapa = 'mapas_imagens aumentado\luz\luz 1.jpg'
         gema = "sprites\GemaAgua.png"
 
     class Colisao_luz1(pygame.sprite.Sprite):
@@ -711,20 +738,20 @@ class GameMaps():
             self.mask = pygame.mask.from_surface(self.image)
     
     class luzup():
-        limites = [645, 2740, 360, 1600]
-        mapa = "mapas_imagens aumentado\luz\luz up.png"
+        limites = [0, 3000, 0, 3000]
+        mapa = "mapas_imagens aumentado\luz\LuzUpParede.png"
 
     class Colisao_luzup(pygame.sprite.Sprite):
         def __init__(self, pos, group):
             super().__init__(group)
-            self.image = pygame.image.load("").convert_alpha()
+            self.image = pygame.image.load("mapas_imagens aumentado\luz\LuzUpParede.png").convert_alpha()
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
     
     class luzpuzzle:
         limites = [626, 676, 331, 881]
-        mapa = 'mapas_imagens aumentado\luz\luz puzzle 1.png'
-        mapa2 = 'mapas_imagens aumentado\luz\luz puzzle 2.png'
+        mapa = 'mapas_imagens aumentado\luz\luz puzzle 1.jpg'
+        mapa2 = 'mapas_imagens aumentado\luz\luz puzzle 2.jpg'
     
     class Colisao_luzpuzzle(pygame.sprite.Sprite):
         def __init__(self, pos, group):
@@ -928,6 +955,13 @@ class GameMaps():
         def __init__(self, pos, group):
             super().__init__(group)
             self.image = pygame.image.load("mapas_imagens aumentado\Terra\Terra gema parede.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+        
+    class Telafinal(pygame.sprite.Sprite):
+        def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("mapas_imagens aumentado\Tela Final.png").convert_alpha()
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
 
