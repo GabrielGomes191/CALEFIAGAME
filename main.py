@@ -125,11 +125,12 @@ def Crypta():
                     textbox_surgiu = False
                     pagina1.kill()
 
+
         ####################       ####################
         #################### LOBBY ####################
         ####################       ####################
 
-        if gamemaps.map == "lobby":
+        elif gamemaps.map == "lobby":
 
             keys = pygame.key.get_pressed()
 
@@ -510,7 +511,6 @@ def Crypta():
                     textbox_surgiu = textboxluzgema.surgir(camera_group.hud_surf, textbox_surgiu)
                     gema_luz.kill()   
                     ColetouLuz = True
-                    camera_group.fade(1280, 720, 500)
 
                 if keys[pygame.K_z] and ColetouLuz:
                     print("sim")

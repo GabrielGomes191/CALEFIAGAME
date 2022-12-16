@@ -256,7 +256,7 @@ class Textbox(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
 
         if textbox_surgiu == False:
-            superficie.blit(self.caixa, (400, 500))
+            superficie.blit(self.caixa, (400, 600))
 
         if keys[pygame.K_z]:
             superficie.fill(transparente)
