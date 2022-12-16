@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
         offsetx = 0 - self.rect.centerx
         offsety = 0 - self.rect.centery
 
-        if self.mask.overlap_area(mapa_colisao.mask, (offsetx, offsety)) > 100:
+        if self.mask.overlap_area(mapa_colisao.mask, (offsetx, offsety)) > 10:
             colidindo = True            
         return colidindo
 
@@ -83,6 +83,87 @@ class Player(pygame.sprite.Sprite):
             print(self.rect.centerx, self.rect.centery, "###", self.rect.x, self.rect.y, "###")
         
         return checkposx, checkposy, andando_horizontal, andando_vertical
+
+    def input_no_gelo(self, incapacitada, colidindo, checkposx, checkposy, esta_no_gelo):
+
+        keys = pygame.key.get_pressed()
+
+        if esta_no_gelo:
+
+            if keys[pygame.K_UP] and incapacitada != "UP" and colidindo == True:
+                self.direction.y = -1
+                checkposy = "up"
+                andando_vertical = True
+
+
+            elif keys[pygame.K_DOWN] and incapacitada != "DOWN" and colidindo == True:
+                self.direction.y = 1
+                checkposy = "down"
+                andando_vertical = True
+            
+            else:
+                self.direction.y = 0
+                checkposy = " "
+                andando_vertical = False
+
+
+            if keys[pygame.K_RIGHT] and incapacitada != "RIGHT" and colidindo == True:
+                self.direction.x = 1
+                checkposx = "right"
+                andando_horizontal = True
+
+            elif keys[pygame.K_LEFT] and incapacitada != "LEFT" and colidindo == True:
+                self.direction.x = -1
+                checkposx = "left"
+                andando_horizontal = True
+            
+            else:
+                self.direction.x = 0
+                checkposx = " "
+                andando_horizontal = False
+        
+        else:
+
+            if keys[pygame.K_UP] and incapacitada != "UP":
+                self.direction.y = -1
+                checkposy = "up"
+                andando_vertical = True
+
+            elif keys[pygame.K_DOWN] and incapacitada != "DOWN":
+                self.direction.y = 1
+                checkposy = "down"
+                andando_vertical = True
+            
+            else:
+                self.direction.y = 0
+                checkposy = " "
+                andando_vertical = False
+
+            if keys[pygame.K_RIGHT] and incapacitada != "RIGHT":
+                self.direction.x = 1
+                checkposx = "right"
+                andando_horizontal = True
+
+            elif keys[pygame.K_LEFT] and incapacitada != "LEFT":
+                self.direction.x = -1
+                checkposx = "left"
+                andando_horizontal = True
+            
+            else:
+                self.direction.x = 0
+                checkposx = " "
+                andando_horizontal = False
+
+        if keys[pygame.K_LSHIFT]:
+            self.speed = 25
+        else:
+            self.speed = 10
+        
+        if keys[pygame.K_q]:
+            print(self.rect.centerx, self.rect.centery, "###", self.rect.x, self.rect.y, "###")
+        
+        return checkposx, checkposy, andando_horizontal, andando_vertical
+
     
     def ultima_pos(self, colidindo, x_antigo, y_antigo):
         if colidindo == False:
@@ -183,7 +264,7 @@ class Player(pygame.sprite.Sprite):
     def update_no_gelo(self, incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, mapa_parede, indice, checkpos, ult_checkpos, esta_no_gelo, area_gelo):
         
         colidindo = self.check_colisao2(mapa_parede)
-        checkposx, checkposy, andando_horizontal, andando_vertical = self.input(incapacitada, colidindo, checkposx, checkposy)
+        checkposx, checkposy, andando_horizontal, andando_vertical = self.input_no_gelo(incapacitada, colidindo, checkposx, checkposy, esta_no_gelo)
         x_antigo, y_antigo = self.ultima_pos(colidindo, x_antigo, y_antigo)
         indice = self.troca_sprite(checkposx, checkposy, andando_horizontal, andando_vertical, indice)
         esta_no_gelo = self.check_colisao_gelo(area_gelo)

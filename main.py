@@ -46,7 +46,7 @@ def Crypta():
     ColetouLuz = False
     ColetouFogo = False
     ColetouTerra = False
-    ColetouAgua = False
+    ColetouAgua = True
     ColetouAr = False
 
     #variaveis para colisao
