@@ -303,7 +303,7 @@ class Pagina(pygame.sprite.Sprite):
         self.lista_paginas = ["sprites paginas\id 0.jpg", "sprites paginas\Pagina1.png", "sprites paginas\Pagina2.png", "sprites paginas\Pagina3.png",
         "sprites paginas\Pagina4.png", "sprites paginas\Pagina5.png", "sprites paginas\Pagina6.png", "sprites paginas\Pagina7.jpg", "sprites paginas\Pagina8.png",
         "sprites paginas\Pagina11.png", "sprites paginas\Pagina12a.png", "sprites paginas\Pagina13a.png", 
-        "sprites paginas\Pagina13b.png", "sprites paginas\Pagina14.png", "sprites paginas\Pagina15.png"]
+        "sprites paginas\Pagina13b.png", "sprites paginas\Pagina14.png", "sprites paginas\Pagina15.png", "sprites paginas\PaginaFinal.png"]
 
         self.pagina_aberta = pygame.image.load(self.lista_paginas[id]).convert_alpha()
 
@@ -435,7 +435,12 @@ class Pedra(pygame.sprite.Sprite):
 
         return self.pode_empurrar
 
-
+class Lapide(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = pygame.image.load("sprites\lapide.png").convert_alpha()
+        self.rect = self.image.get_rect(center = pos)
+        self.mask = pygame.mask.from_surface(self.image)
 
 class Pedra_lobby(pygame.sprite.Sprite):
     def __init__(self, pos, group):
@@ -562,7 +567,7 @@ class CameraGroup(pygame.sprite.Group):
     def limpa_superficie(self):
         transparente = (0,0,0,0)
         self.hud_surf.fill(transparente)
-        
+
     def camera_centrada(self, target, limites):
         
         # limites = [x_menor, x_maior, y_menor, y_maior]
@@ -628,11 +633,19 @@ class GameMaps():
     class floresta():
         limites = [626, 1055, 321, 1711]
         mapa = 'mapas_imagens aumentado\Floresta\MapaFloresta.png'
+        mapafinal = "mapas_imagens aumentado\Floresta\MapaFlorestaPosFinal.png"
 
     class Colisao_floresta(pygame.sprite.Sprite):
         def __init__(self, pos, group):
             super().__init__(group)
             self.image = pygame.image.load("mapas_imagens aumentado\Floresta\MapaFlorestaColisao.png").convert_alpha()
+            self.rect = self.image.get_rect(center = pos)
+            self.mask = pygame.mask.from_surface(self.image)
+    
+    class Colisao_floresta_final(pygame.sprite.Sprite):
+        def __init__(self, pos, group):
+            super().__init__(group)
+            self.image = pygame.image.load("mapas_imagens aumentado\Floresta\MapaFlorestaPosFinalParede.png").convert_alpha()
             self.rect = self.image.get_rect(center = pos)
             self.mask = pygame.mask.from_surface(self.image)
     

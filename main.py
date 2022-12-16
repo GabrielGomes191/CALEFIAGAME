@@ -21,7 +21,7 @@ def Crypta():
     gamearea = " "
     # clock = pygame.time.Clock()
     camera_group = CameraGroup()
-    player = Player((1035, 2120), camera_group)
+    player = Player((585, 2000), camera_group)
     Tempo = 1
     Passado = 0
     Fade = False
@@ -46,9 +46,9 @@ def Crypta():
 
     #variaveis Coletou emas 
     ColetouLuz = True
-    ColetouFogo = False
-    ColetouTerra = False
-    ColetouAgua = False
+    ColetouFogo = True
+    ColetouTerra = True
+    ColetouAgua = True
     ColetouAr = False
 
     #variaveis para colisao
@@ -93,6 +93,7 @@ def Crypta():
     p11b = False
     p12 = False
     p13 = False 
+    p15 = False
 
 
     while True:
@@ -116,11 +117,26 @@ def Crypta():
                 colisao_floresta = gamemaps.Colisao_floresta((0,0), camera_group)
                 if p1 == False:
                     pagina1 = Pagina((959, 324), camera_group, 1)
+                if ColetouAr:
+                    lapide = Lapide((962,304), camera_group)
+                    colisao_floresta_final = gamemaps.Colisao_floresta_final((0,0), camera_group)
+                    pagina1.kill()
                 colisao = True
+            
+
 
             p1 = pagina1.interact(player, camera_group.hud_surf, p1)
 
-            contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.floresta.limites, gamemaps.floresta.mapa, colisao_floresta, camera_group, colidindo, incapacitada)
+            if ColetouAr == False:
+                print("nao")
+                contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.floresta.limites, gamemaps.floresta.mapafinal, colisao_floresta, camera_group, colidindo, incapacitada)
+            
+            if ColetouAr:
+                contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.floresta.limites, gamemaps.floresta.mapafinal, colisao_floresta_final, camera_group, colidindo, incapacitada)
+                
+                if pygame.sprite.collide_mask(player, lapide):
+                    print("sim")
+            
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_floresta, indice, checkpos)
             
             # FLORESTA PARA LOBBY #
@@ -143,7 +159,7 @@ def Crypta():
             
             if keys[pygame.K_z]:
                 camera_group.limpa_superficie()
-                
+
             if colisao == False:
 
                 if ColetouAgua == False:
@@ -162,7 +178,6 @@ def Crypta():
             textboxpedra = Textbox((0,0), 3)
             textboxagua = Textbox((0,0), 4)
 
-            
             ult_checkpos = Player.ultimo_checkpos(checkposx, checkposy, ult_checkpos)
             
 
@@ -295,6 +310,14 @@ def Crypta():
                 arvore.kill()
                 agua.kill()
 
+            #carrega florestafinal
+            elif player.rect.collidepoint(1425, 1130) and ColetouAr:
+                gamearea = " "
+                gamemaps.map = "floresta"
+                colisao, contador_mapas = troca_mapa(colisao_lobby, camera_group, 0, 1468, 585, 2000, player)
+                pedra0.kill()
+                arvore.kill()
+                agua.kill()
 
         ####################          ####################
         #################### AREA LUZ ####################
@@ -354,7 +377,6 @@ def Crypta():
                 if colisao == False:
                     colisao_luz2 = gamemaps.Colisao_luz2((0,0), camera_group)
                     if p3 == False:
-                        print("sim")
                         pagina3 = Pagina((390, 1350), camera_group, 3)
                     colisao = True
 
@@ -530,7 +552,6 @@ def Crypta():
                     ColetouLuz = True
 
                 if keys[pygame.K_z] and ColetouLuz:
-                    print("sim")
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
                     colisao, contador_mapas = troca_mapa(colisao_luzgema, camera_group, 5, 15, 1035, 2135, player)
@@ -906,11 +927,13 @@ def Crypta():
                 if player.rect.collidepoint(525, 30):
                     colisao, contador_mapas = troca_mapa(colisao_ar2, camera_group, 230, 805, 875, 1290, player)
                     gamemaps.map = "arpuzzle"
+                    pagina13.kill()
 
                 #ar 2 para ar 1
                 if player.rect.collidepoint(650, 1110):
                     colisao, contador_mapas = troca_mapa(colisao_ar2, camera_group, 0, 15, 330, 245, player)
                     gamemaps.map = "ar1"
+                    pagina13.kill()
 
 
 
@@ -1153,7 +1176,17 @@ def Crypta():
                     gamemaps.map = "lobby"
                     textbox_surgiu = False
 
-                    
+
+        # elif gamemaps.area == "florestafinal":
+        #     if gamemaps.map == "florestafinal":
+
+        #          if colisao == False:
+        #             colisao_floresta = gamemaps.Colisao_floresta((0,0), camera_group)
+        #             colisao_floresta = Textbox((0,0), 7)
+        #             colisao = True
+    
+        #         contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.floresta.limites, gamemaps.floresta.mapa, colisao_floresta, camera_group, colidindo, incapacitada)
+        #         checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_floresta, indice, checkpos)
 
 
         #print(clock)
