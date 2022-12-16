@@ -300,7 +300,11 @@ class Pagina(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.id = id
 
-        self.lista_paginas = ["sprites paginas\id 0.jpg", "sprites paginas\id 1.png"]
+        self.lista_paginas = ["sprites paginas\id 0.jpg", "sprites paginas\Pagina1.png", "sprites paginas\Pagina2.png", "sprites paginas\Pagina3.png",
+        "sprites paginas\Pagina4.png", "sprites paginas\Pagina5.png", "sprites paginas\Pagina6.png", "sprites paginas\Pagina7.jpg", "sprites paginas\Pagina8.png",
+        "sprites paginas\Pagina11.png", "sprites paginas\Pagina12a.png", "sprites paginas\Pagina13a.png", 
+        "sprites paginas\Pagina13b.png", "sprites paginas\Pagina14.png", "sprites paginas\Pagina15.png"]
+
         self.pagina_aberta = pygame.image.load(self.lista_paginas[id]).convert_alpha()
 
 
@@ -309,9 +313,10 @@ class Pagina(pygame.sprite.Sprite):
         transparente = (0,0,0,0)
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_e] and self.rect.colliderect(player.rect):
+        if keys[pygame.K_z] and self.rect.colliderect(player.rect):
             self.kill()
             superficie.blit(self.pagina_aberta, (490, 150))
+            print("deu blit")
             coletou = True
 
         if keys[pygame.K_ESCAPE]:
@@ -531,19 +536,19 @@ class CameraGroup(pygame.sprite.Group):
         self.hud_surf = pygame.image.load("sprites\Adan.png")
         self.hud_rect = self.hud_surf.get_rect(topleft = (0, 0))
 
-    def fade(self, width, height, alpha): 
-        Fade = False
-        ate = 0
-        #self.hud_surf = pygame.Surface((width, height))
-        self.hud_surf.fill((0,0,0))
-        self.hud_surf.set_alpha(alpha)
-        self.display_surface.blit(self.hud_surf, (0,0))
-        for i in range(0, 1200):
-            ate += 1
-            if ate >= 1180:
-                Fade = True
+    # def fade(self, width, height, alpha): 
+    #     Fade = False
+    #     ate = 0
+    #     #self.hud_surf = pygame.Surface((width, height))
+    #     self.hud_surf.fill((0,0,0))
+    #     self.hud_surf.set_alpha(alpha)
+    #     self.display_surface.blit(self.hud_surf, (0,0))
+    #     for i in range(0, 1200):
+    #         ate += 1
+    #         if ate >= 1180:
+    #             Fade = True
 
-        return Fade, ate
+    #     return Fade, ate
 
     # def fade_out(self, width, height):
         
@@ -554,7 +559,10 @@ class CameraGroup(pygame.sprite.Group):
     #         pygame.time.delay(20)
     #     return i
     
-
+    def limpa_superficie(self):
+        transparente = (0,0,0,0)
+        self.hud_surf.fill(transparente)
+        
     def camera_centrada(self, target, limites):
         
         # limites = [x_menor, x_maior, y_menor, y_maior]
@@ -939,5 +947,6 @@ def carrega_mapa_com_gelo(contador_mapas, tela, player, limites, mapa, mapa_pare
     pygame.display.update()
 
     return contador_mapas, colidindo, esta_no_gelo
+
 
 

@@ -38,15 +38,17 @@ def Crypta():
     contador_verde = 0
     venceu_cogu = False
     esta_no_gelo = True
-
+    click = False
+    click1 = False
+    click2 = False
     presets = False
 
 
     #variaveis Coletou emas 
-    ColetouLuz = False
+    ColetouLuz = True
     ColetouFogo = False
     ColetouTerra = False
-    ColetouAgua = True
+    ColetouAgua = False
     ColetouAr = False
 
     #variaveis para colisao
@@ -84,8 +86,11 @@ def Crypta():
     p7 = False
     p8 = False
     p9 = False
+    p9b = False
     p10 = False
+    p10b = False
     p11 = False
+    p11b = False
     p12 = False
     p13 = False 
 
@@ -110,9 +115,11 @@ def Crypta():
             if colisao == False:
                 colisao_floresta = gamemaps.Colisao_floresta((0,0), camera_group)
                 if p1 == False:
-                    pagina1 = Pagina((112, 464), camera_group, 1)
+                    pagina1 = Pagina((959, 324), camera_group, 1)
                 colisao = True
-        
+
+            p1 = pagina1.interact(player, camera_group.hud_surf, p1)
+
             contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.floresta.limites, gamemaps.floresta.mapa, colisao_floresta, camera_group, colidindo, incapacitada)
             checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_floresta, indice, checkpos)
             
@@ -133,7 +140,10 @@ def Crypta():
         elif gamemaps.map == "lobby":
 
             keys = pygame.key.get_pressed()
-
+            
+            if keys[pygame.K_z]:
+                camera_group.limpa_superficie()
+                
             if colisao == False:
 
                 if ColetouAgua == False:
@@ -156,17 +166,17 @@ def Crypta():
             ult_checkpos = Player.ultimo_checkpos(checkposx, checkposy, ult_checkpos)
             
 
-            if keys[pygame.K_z]:
-                click = True
-            else:
-                click = False
+            # if keys[pygame.K_z]:
+            #     click = True
+            # else:
+                #click = False
 
             #Escuridao roadblock#
             if player.rect.collidepoint(2330, 1820) and ColetouLuz == False:
                 click = True
                 textboxescuridao.surgir_menu(camera_group.hud_surf, click)
 
-            elif ColetouLuz == False and click == False:
+            else:
                 textboxescuridao.surgir_menu(camera_group.hud_surf, click)
 
             #Pedra roadblock#
@@ -182,10 +192,12 @@ def Crypta():
 
 
             if player.mask.overlap_area(pedra0.mask, (offset_pedra0_x, offset_pedra0_y)) > 0 and ColetouTerra == False:
-                textboxpedra.surgir_menu(camera_group.hud_surf, click)
+                click1 = True
+                textboxpedra.surgir_menu(camera_group.hud_surf, click1)
 
-            elif ColetouTerra == False and click == False:
-                textboxpedra.surgir_menu(camera_group.hud_surf, click)
+            else:
+                click1 = False
+                textboxpedra.surgir_menu(camera_group.hud_surf, click1)
 
             delay_empurrar += 1
 
@@ -198,12 +210,15 @@ def Crypta():
                 x_antigo, y_antigo = player.ultima_pos(colidindo, x_antigo, y_antigo)
 
             if player.mask.overlap_area(arvore.mask, (offset_arvore_x, offset_arvore_y)) > 0 and ColetouFogo == False:
-                textboxesplanta.surgir_menu(camera_group.hud_surf, click)
+                click2 = True
+                textboxesplanta.surgir_menu(camera_group.hud_surf, click2)
+                print("colidindo")
             
-            elif ColetouFogo == False and click == False:
-                textboxesplanta.surgir_menu(camera_group.hud_surf, click)
+            else:
+                click2 = False
+                textboxesplanta.surgir_menu(camera_group.hud_surf, click2)
 
-            elif player.mask.overlap_area(arvore.mask, (offset_arvore_x, offset_arvore_y)) > 0 and ColetouFogo == True and click:
+            if player.mask.overlap_area(arvore.mask, (offset_arvore_x, offset_arvore_y)) > 0 and ColetouFogo == True and keys[pygame.K_z]:
                 arvore.kill()
                 arvore.rect.center = (-2, -2)
             
@@ -290,16 +305,16 @@ def Crypta():
             #################### MAPA LUZ1 ####################
             if gamemaps.map == "luz1":
 
-                if ColetouLuz == False:
-                    camera_group.fade(1280, 720, 215)
+                # if ColetouLuz == False:
+                #     camera_group.fade(1280, 720, 215)
 
                 if colisao == False:
                     colisao_luz1 = gamemaps.Colisao_luz1((0,0), camera_group)
-                    if p1 == False:
-                        pagina1 = Pagina((112, 464), camera_group, 1)
+                    if p2 == False:
+                        pagina2 = Pagina((112, 464), camera_group, 2)
                     colisao = True
             
-                p1 = pagina1.interact(player, camera_group.hud_surf, p1)
+                p2 = pagina2.interact(player, camera_group.hud_surf, p2)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.luz1.limites, gamemaps.luz1.mapa, colisao_lobby, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_luz1, indice, checkpos)
@@ -310,7 +325,7 @@ def Crypta():
                     gamemaps.map = "luz2"
                     colisao, contador_mapas = troca_mapa(colisao_luz1, camera_group, 637, 880, 1315, 1450, player)
                     textbox_surgiu = False
-                    pagina1.kill()
+                    pagina2.kill()
 
                 #luz1 para luzup
                 elif player.rect.collidepoint(527, 429):
@@ -327,38 +342,39 @@ def Crypta():
                     gamemaps.map = "lobby"
                     colisao, contador_mapas = troca_mapa(colisao_luz1, camera_group, 15, 1000, 200, 1815, player)
                     textbox_surgiu = False
-                    pagina1.kill()
+                    pagina2.kill()
                     
 
             #################### MAPA LUZ2 ####################      
             elif gamemaps.map == "luz2":
 
-                if ColetouLuz == False:
-                    camera_group.fade(1280, 720, 200)
+                # if ColetouLuz == False:
+                #     camera_group.fade(1280, 720, 200)
 
                 if colisao == False:
                     colisao_luz2 = gamemaps.Colisao_luz2((0,0), camera_group)
-                    if p2 == False:
-                        pagina2 = Pagina((390, 1350), camera_group, 0)
+                    if p3 == False:
+                        print("sim")
+                        pagina3 = Pagina((390, 1350), camera_group, 3)
                     colisao = True
+
+                p3 = pagina3.interact(player, camera_group.hud_surf, p3)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.luz2.limites, gamemaps.luz2.mapa, colisao_luz2, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_luz2, indice, checkpos)
 
-                p2 = pagina2.interact(player, camera_group.hud_surf, p2)
 
                 #luz2 para luz3
                 if player.rect.collidepoint(130, 355):
                     colisao, contador_mapas = troca_mapa(colisao_luz2, camera_group, -5, 35, 775, 105, player)
                     gamemaps.map = "luz3"
-                    pagina2.kill()
+                    pagina3.kill()
 
                 #luz 2 para luz 1
                 elif player.rect.collidepoint(1325, 1550):
                     gamemaps.map = "luz1"
                     colisao, contador_mapas = troca_mapa(colisao_luz2, camera_group, 5, 15, 782, 114, player)
-                    pagina2.kill()
-
+                    pagina3.kill()
 
 
             #################### MAPA LUZ UP ####################
@@ -388,19 +404,20 @@ def Crypta():
             #################### MAPA LUZ 3 ####################
             elif gamemaps.map == "luz3":
 
-                if ColetouLuz == False:
-                    camera_group.fade(1280, 720, 185)
+                # if ColetouLuz == False:
+                #     camera_group.fade(1280, 720, 185)
 
                 if colisao == False:
                     colisao_luz3 = gamemaps.Colisao_luz3((0,0), camera_group)
-                    if p3 == False:
-                        pagina3 = Pagina((230, 605), camera_group, 0)
+                    if p4 == False:
+                        pagina4 = Pagina((230, 605), camera_group, 4)
                     colisao = True
+
+                p4 = pagina4.interact(player, camera_group.hud_surf, p4)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.luz3.limites, gamemaps.luz3.mapa, colisao_luz3, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_luz3, indice, checkpos)
 
-                p3 = pagina3.interact(player, camera_group.hud_surf, p3)
 
                 #luz3 para luzpuzzle
                 if player.rect.collidepoint(780, 1130):
@@ -416,8 +433,8 @@ def Crypta():
             #################### MAPA LUZ PUZZLE ####################
             elif gamemaps.map == "luzpuzzle":
 
-                if ColetouLuz == False:
-                    camera_group.fade(1280, 720, 150)
+                # if ColetouLuz == False:
+                #     camera_group.fade(1280, 720, 150)
 
                 if colisao == False:
                     colisao_luzpuzzle = gamemaps.Colisao_luzpuzzle((0,0), camera_group)
@@ -459,8 +476,8 @@ def Crypta():
 
                 elif venceu_cogu == True:
 
-                    if ColetouLuz == False:
-                        camera_group.fade(1280, 720, 150)
+                    # if ColetouLuz == False:
+                    #     camera_group.fade(1280, 720, 150)
 
                     contador_mapas = 0
                     cogumelo3b.kill() 
@@ -533,28 +550,35 @@ def Crypta():
             if gamemaps.map == "fogo1":
                 if colisao == False:
                     colisao_fogo1 = gamemaps.Colisao_fogo1((0,0), camera_group)
-                    pagina4 = Pagina((1880, 8520), camera_group, 0)
-                    pagina5 = Pagina((230, 645), camera_group, 0)
-                    pagina6 = Pagina((230, 645), camera_group, 0)
-                    pagina7 = Pagina((230, 645), camera_group, 0)
+                    pagina7 = Pagina((8060, 3890), camera_group, 7)
+                    pagina6 = Pagina((4485, 5415), camera_group, 6)
+                    pagina5 = Pagina((435, 9760), camera_group, 5)
                     colisao = True
 
                 colidindo = player.anula_colisao(colidindo)
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.fogo1.limites, gamemaps.fogo1.mapa, colisao_fogo1, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_fogo1, indice, checkpos)
 
-                #pagina2.interact(player, camera_group.hud_surf)
+                p5 = pagina5.interact(player, camera_group.hud_surf, p5)
+                p6 = pagina6.interact(player, camera_group.hud_surf, p6)
+                p7 = pagina7.interact(player, camera_group.hud_surf, p7)
                 
                 #fogo1 para fogo2
                 if player.rect.collidepoint(14155, 170):
                     colisao, contador_mapas = troca_mapa(colisao_fogo1, camera_group, 15, 235, 655, 710, player)
                     gamemaps.map = "fogo2"
+                    pagina5.kill()
+                    pagina6.kill()
+                    pagina7.kill()
 
                 #fogo1 para lobby
                 elif player.rect.collidepoint(265, 9760):
                     colisao, contador_mapas = troca_mapa(colisao_fogo1, camera_group, 1205, 1460, 2260, 1820, player)
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
+                    pagina5.kill()
+                    pagina6.kill()
+                    pagina7.kill()
 
             #################### MAPA FOGO 2 ####################   
             if gamemaps.map == "fogo2":
@@ -602,85 +626,87 @@ def Crypta():
             if gamemaps.map == "agua1":
                 if colisao == False:
                     colisao_agua1 = gamemaps.Colisao_agua1((0,0), camera_group)
-                    pagina8 = Pagina((841, 202), camera_group, 0)
+                    pagina9 = Pagina((841, 202), camera_group, 9)
                     colisao = True
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player,  gamemaps.agua1.limites, gamemaps.agua1.mapa, colisao_agua1, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua1, indice, checkpos)
 
-                p8 = pagina8.interact(player, camera_group.hud_surf, p8)
+                p9 = pagina9.interact(player, camera_group.hud_surf, p9)
 
                 #agua 1 para agua 2
                 if player.rect.collidepoint(1281, 897):
                     colisao, contador_mapas = troca_mapa(colisao_agua1, camera_group, 1045, 460, 1685, 820, player)
                     gamemaps.map = "agua2"
-                    pagina8.kill()
+                    pagina9.kill()
+
                 elif player.rect.collidepoint(411, 907):
                     colisao, contador_mapas = troca_mapa(colisao_agua1, camera_group, 0, 460, 640, 820, player)
                     gamemaps.map = "agua2"
-                    pagina8.kill()
+                    pagina9.kill()
                 
                 #agua 1 para lobby
                 elif player.rect.collidepoint(841, 1552):
                     colisao, contador_mapas = troca_mapa(colisao_agua1, camera_group, 465, 15, 1100, 230, player)
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
-                    pagina8.kill()
+                    pagina9.kill()
 
 
             #################### MAPA AGUA 2 ####################  
             elif gamemaps.map == "agua2":
                 if colisao == False:
                     colisao_agua2 = gamemaps.Colisao_agua2((0,0), camera_group)
-                    pagina9 = Pagina((835, 350), camera_group, 0)
-                    pagina10 = Pagina((1475, 350), camera_group, 0)
+                    pagina10 = Pagina((835, 350), camera_group, 10)
+                    pagina10b = Pagina((1475, 350), camera_group, 10)
                     colisao = True
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.agua2.limites, gamemaps.agua2.mapa, colisao_agua2, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua2, indice, checkpos)
 
-                p9 = pagina8.interact(player, camera_group.hud_surf, p9)
-                p10 = pagina8.interact(player, camera_group.hud_surf, p10)
+                p10 = pagina10.interact(player, camera_group.hud_surf, p10)
+                p10b = pagina10b.interact(player, camera_group.hud_surf, p10b)
 
                 #agua 2 para agua 3a
                 if player.rect.collidepoint(260, 350):
                     colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 55, 1200, 970, 1630, player)
                     gamemaps.map = "agua3a"
-                    pagina9.kill()
                     pagina10.kill()
+                    pagina10b.kill()
 
                 #agua 2 para agua 3b
                 elif player.rect.collidepoint(2070, 350):
                     colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 10, 1200, 330, 1630, player)
                     gamemaps.map = "agua3b"
-                    pagina9.kill()
                     pagina10.kill()
+                    pagina10b.kill()
 
                 #agua 2 para agua 1
                 elif player.rect.collidepoint(1615, 815):
                     colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 425, 545, 1195, 895, player)
                     gamemaps.map = "agua1"
-                    pagina9.kill()
                     pagina10.kill()
+                    pagina10b.kill()
                 
                 elif player.rect.collidepoint(715, 815):
                     colisao, contador_mapas = troca_mapa(colisao_agua2, camera_group, 10, 535, 480, 895, player)
                     gamemaps.map = "agua1"
-                    pagina9.kill()
                     pagina10.kill()
+                    pagina10b.kill()
 
             
             #################### MAPA AGUA 3A ####################
             elif gamemaps.map == "agua3a":
                 if colisao == False:
                     colisao_agua3a = gamemaps.Colisao_agua3a((0,0), camera_group)
-                    pagina11 = Pagina((80, 235), camera_group, 0)
+                    pagina11 = Pagina((80, 235), camera_group, 11)
                     colisao = True
+
+                p11 = pagina11.interact(player, camera_group.hud_surf, p11)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.agua3a.limites, gamemaps.agua3a.mapa, colisao_agua3a, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua3a, indice, checkpos)
 
-                p11 = pagina11.interact(player, camera_group.hud_surf, p11)
 
                 #agua 3a para agua puzzle
                 if player.rect.collidepoint(525, 105):
@@ -697,13 +723,14 @@ def Crypta():
             elif gamemaps.map == "agua3b":
                 if colisao == False:
                     colisao_agua3b = gamemaps.Colisao_agua3b((0,0), camera_group)
-                    pagina12 = Pagina((1240, 235), camera_group, 0)
+                    pagina11b = Pagina((1240, 235), camera_group, 11)
                     colisao = True
+
+                p11b = pagina11b.interact(player, camera_group.hud_surf, p11b)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.agua3b.limites, gamemaps.agua3b.mapa, colisao_agua3b, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_agua3b, indice, checkpos)
             
-                p12 = pagina11.interact(player, camera_group.hud_surf, p12)
 
                 #agua 3b para agua puzzle
                 if player.rect.collidepoint(525, 105):
@@ -840,7 +867,10 @@ def Crypta():
             if gamemaps.map == "ar1":
                 if colisao == False:
                     colisao_ar1 = gamemaps.Colisao_ar1((0,0), camera_group)
+                    pagina12 = Pagina((620, 190), camera_group, 13)
                     colisao = True
+
+                p12 = pagina12.interact(player, camera_group.hud_surf, p12)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.ar1.limites, gamemaps.ar1.mapa, colisao_ar1, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_ar1, indice, checkpos)
@@ -849,12 +879,14 @@ def Crypta():
                 if player.rect.collidepoint(330, 155):
                     colisao, contador_mapas = troca_mapa(colisao_ar1, camera_group, 0, 560, 580, 1135, player)
                     gamemaps.map = "ar2"
+                    pagina12.kill()
                 
                 #ar 1 para lobby
                 if player.rect.collidepoint(925, 735):
                     colisao, contador_mapas = troca_mapa(colisao_ar1, camera_group, 0, 15, 335, 365, player)
                     gamearea = "lobby"
                     gamemaps.map = "lobby"
+                    pagina12.kill()
                 
         #################### MAPA AR 2 ####################
                     
@@ -862,7 +894,10 @@ def Crypta():
 
                 if colisao == False:
                     colisao_ar2 = gamemaps.Colisao_ar2((0,0), camera_group)
+                    pagina13 = Pagina((720, 575), camera_group, 14)
                     colisao = True
+
+                p13 = pagina13.interact(player, camera_group.hud_surf, p13)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.ar2.limites, gamemaps.ar2.mapa, colisao_ar2, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_ar2, indice, checkpos)
@@ -953,7 +988,10 @@ def Crypta():
             if gamemaps.map == "terra1":
                 if colisao == False:
                     colisao_terra1 = gamemaps.Colisao_terra1((0,0), camera_group)
+                    pagina8 = Pagina((980, 910), camera_group, 8)
                     colisao = True
+
+                p8 = pagina8.interact(player, camera_group.hud_surf, p8)
 
                 contador_mapas, colidindo = carrega_mapa(contador_mapas, tela, player, gamemaps.terra1.limites, gamemaps.terra1.mapa, colisao_terra1, camera_group, colidindo, incapacitada)
                 checkposx, checkposy, x_antigo, y_antigo, indice, checkpos = player.update(incapacitada, colidindo, x_antigo, y_antigo, checkposx, checkposy, colisao_terra1, indice, checkpos)
@@ -963,24 +1001,28 @@ def Crypta():
                     colisao, contador_mapas = troca_mapa(colisao_terra1, camera_group, 330, 1185, 976, 1646, player)
                     gamemaps.map = "terra2"
                     saida = "baixo"
+                    pagina8.kill()
 
                 #terra 1 para direita
                 elif player.rect.collidepoint(1805, 865):
                     colisao, contador_mapas = troca_mapa(colisao_terra1, camera_group, 0, 515, 196, 866, player)
                     gamemaps.map = "terra2"
                     saida = "esquerda"
+                    pagina8.kill()
                 
                 #terra 1 para baixo
                 elif player.rect.collidepoint(975, 1740):
                     colisao, contador_mapas = troca_mapa(colisao_terra1, camera_group, 335, 5, 971, 106, player)
                     gamemaps.map = "terra2"
                     saida = "cima"
+                    pagina8.kill()
 
                 #terra 1 para esquerda
                 elif player.rect.collidepoint(135, 865):
                     colisao, contador_mapas = troca_mapa(colisao_terra1, camera_group, 1195, 320, 2255, 680, player)
                     gamemaps.map = "lobby"
                     saida = "esquerda"
+                    pagina8.kill()
                 
         #################### MAPA TERRA2 ####################
 
